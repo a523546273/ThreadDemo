@@ -378,6 +378,7 @@ java允许使用finalize()方法在垃圾收集器将对象从内存中清除出
 4. PSYoungGen：Parallel Scavenge
 5. ParOldGen：Parallel Old Generation
 
+
 #### 8.2 Server/Client模式分别是什么意思
 
 1. 适用范围：只需要掌握Server模式即可，Client模式基本不会用
@@ -525,6 +526,17 @@ java允许使用finalize()方法在垃圾收集器将对象从内存中清除出
 | UseConcMarkSweepGC                | ParNew             | 复制               | CMS+Serial Old的收集器组合(Serial Old 作为CMS出错的后备收集器) | 标清       |
 | UseG1GC                           | G1整体上采用标整   | 局部是通过复制算法 |                                                              |            |
 
+1. DefNew：Default New Generation
+2. Tenured：Old
+3. ParNew：Parallel New Generation
+4. PSYoungGen：Parallel Scavenge
+5. ParOldGen：Parallel Old Generation
+
+-Xms10m -Xmx10M -XX:+PrintGCDetails -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+-Xms10m -Xmx10M -XX:+PrintGCDetails -XX:+PrintCommandLineFlags -XX:+UseParNewGC
+-Xms10m -Xmx10M -XX:+PrintGCDetails -XX:+PrintCommandLineFlags -XX:+UseParallelGC
+-Xms10m -Xmx10M -XX:+PrintGCDetails -XX:+PrintCommandLineFlags -XX:+UseConcMarkSweepGC
+-Xms10m -Xmx10M -XX:+PrintGCDetails -XX:+PrintCommandLineFlags -XX:+UseG1GC
 
 
 ### 9、==G1垃圾收集器==
@@ -635,7 +647,8 @@ CMS垃圾收集器虽然减少了暂停应用程序的运行时间，但是他�
 1. G1不会产生内存碎片
 2. 可以精确控制停顿。该收集器十八真个堆划分成多个固定大小的区域，每根据允许停顿的时间去收集垃圾最多的区域
 
-
+java -server XX:+UseG1GC -jar  
+underTow
 
 ### 10、生产环境服务器变慢，诊断思路和性能评估谈谈？
 
@@ -684,7 +697,7 @@ CMS垃圾收集器虽然减少了暂停应用程序的运行时间，但是他�
 
 4. 硬盘：df
 
-   查看磁盘剩余空间  df -h
+   查看磁盘剩余空间  df -h human用人类看得懂的方式
 
 5. 磁盘IO：iostat
 
@@ -696,7 +709,7 @@ CMS垃圾收集器虽然减少了暂停应用程序的运行时间，但是他�
      - wkB/s每秒读写数据量kb
      - svctm I/O请求的平均服务时间，单位毫秒；
      - await I/O请求的平均等待时间，单位毫秒；值越小，性能越好；
-     - ==util== 一秒中又百分几的时间用于I/O操作，接近100%时，表示磁盘带宽跑满，需要优化程序或加磁盘
+     - ==util== 一秒中有百分几的时间用于I/O操作，接近100%时，表示磁盘带宽跑满，需要优化程序或加磁盘
      - rkB/s，wkB/s根据系统该应用不同回有不同的值，担忧规律遵循：长期、超大数据读写，肯定不正常，需要优化程序读取。
      - svctm的值与await的值很接近，表示几乎没有I/O等待，磁盘性能好，如果await的值远高于svctm的值，则表示I/O队列等待太长，需要优化程序或更换更快磁盘
 
